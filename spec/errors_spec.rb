@@ -18,22 +18,13 @@ RSpec.describe YardSequel::AstNodeParseError, '#message' do
     it 'returns the message' do
       expect(error.message).to be message
     end
-
-    it 'returns only the message text, when location_info is true' do
-      expect(error.message(true)).to eq message
-    end
   end
 
   context 'initialized with only an AstNode' do
     error = YardSequel::AstNodeParseError.new(nil, ast_node)
 
-    it 'returns the class name' do
-      expect(error.message).to eq YardSequel::AstNodeParseError.name
-    end
-
-    it 'returns the location info with the class name, '\
-       'when location_info is true' do
-      expect(error.message(true))
+    it 'returns the location info with the class name' do
+      expect(error.message)
         .to eq [[ast_node.file, ast_node.line].join(':'),
                 YardSequel::AstNodeParseError.name].join(': ')
     end
@@ -42,12 +33,8 @@ RSpec.describe YardSequel::AstNodeParseError, '#message' do
   context 'initialized with a message and an AstNode' do
     error = YardSequel::AstNodeParseError.new(message, ast_node)
 
-    it 'returns the message' do
-      expect(error.message).to be message
-    end
-
-    it 'returns the message with location info, when location_info is true' do
-      expect(error.message(true))
+    it 'returns the message with location info' do
+      expect(error.message)
         .to eq [[ast_node.file, ast_node.line].join(':'), message].join(': ')
     end
   end

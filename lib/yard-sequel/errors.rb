@@ -19,13 +19,31 @@ module YardSequel
       super message
     end
 
-    # @param [Boolean] location_info Whether to prepend the location info of the
-    #   AstNode, if the attribute is set, to the message.
-    # @return [String] the message of the Error.
-    def message(location_info = false)
-      return super() unless location_info
-      [([@ast_node.file, @ast_node.line].compact.join(':') if @ast_node),
-       super()].compact.join(': ')
+    # @return [String] the message of the Error, with the location info of the
+    #   AstNode prepended, if it exists.
+    def message
+      return super unless @ast_node
+      [[ast_node_file, ast_node_line].compact.join(':'), super]
+        .compact.join(': ')
+    end
+
+    private
+
+    # @note This disables STDERR while getting the attribute.
+    # @return [String, nil] the file name of the AstNode.
+    def ast_node_file
+      return unless @ast_node
+      stderr    = $stderr
+      $stderr   = StringIO.new
+      file_name = @ast_node.file
+      $stderr   = stderr
+      file_name
+    end
+
+    # @return [String, nil] the line number of the AstNode.
+    def ast_node_line
+      return unless @ast_node && @ast_node.has_line?
+      @ast_node.line
     end
   end
 
