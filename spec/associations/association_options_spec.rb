@@ -92,10 +92,8 @@ RSpec.describe YardSequel::Associations::AssociationOptions,
 
     it 'raises an OptionValueParseError' do
       expect { method.call(ast_node) }
-        .to raise_error(
-          YardSequel::OptionValueParseError,
-          "(ripper):1: Can't infer option value from a label node"
-        )
+        .to raise_error YardSequel::AstNodeParseError,
+                        /can't infer option value from a \w+ node/i
     end
   end
 
@@ -146,8 +144,7 @@ RSpec.describe YardSequel::Associations::AssociationOptions,
 
     it 'raises an OptionValueParseError' do
       expect { method.call(ast_node) }
-        .to raise_error(YardSequel::OptionValueParseError,
-                        "(ripper):1: Can't parse String interpolation")
+        .to raise_error YardSequel::AstNodeParseError, /string interpolation/i
     end
   end
 

@@ -48,8 +48,12 @@ module YardSequel
         #   parseable types.
         # @return (see .value_from_const_path_ref)
         def value_from_node(ast_node)
-          raise(OptionValueParseError, ast_node) unless
-            NODE_TYPES.include? ast_node.type
+          unless NODE_TYPES.include? ast_node.type
+            raise(AstNodeParseError.new(
+                    "Can't infer option value from a #{ast_node.type} node",
+                    ast_node
+            ))
+          end
           send(:"value_from_#{ast_node.type}", ast_node)
         end
 
@@ -59,8 +63,8 @@ module YardSequel
         # @return (see .value_from_const_path_ref)
         def value_from_string_literal(ast_node)
           if ast_node[0].children.any? { |cn| cn.type == :string_embexpr }
-            raise(OptionValueParseError.new("Can't parse String interpolation",
-                                            ast_node.file, ast_node.line))
+            raise(AstNodeParseError.new("Can't parse String interpolation",
+                                        ast_node))
           end
           ast_node.jump(:tstring_content).source
         end
