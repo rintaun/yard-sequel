@@ -16,7 +16,7 @@ module YardSequel
       end
 
       # Checks the passed AstNode, if it can be converted to an AstNode Hash.
-      # It will raise various ArgumentErrors or TypeErrors, if not.
+      # It will raise AstNodeParseErrors, if not.
       # @param [YARD::Parser::Ruby::AstNode] ast_node The AstNode to check, if
       #   it can be converted to an AstNode Hash.
       # @return [void]
@@ -33,12 +33,14 @@ module YardSequel
 
       # Checks if the passed `:assoc` type node has exactly two children.
       # @param [YARD::Parser::Ruby::AstNode] assoc_node The AstNode to check.
-      # @raise [ArgumentError] If the passed AstNode does not have exactly two
-      #   children.
+      # @raise [AstNodeParseError] If the passed AstNode does not have exactly
+      #   two children.
       # @return [nil]
       def check_assoc_child_has_two_children(assoc_node)
         return if assoc_node.children.size == 2
-        raise(ArgumentError, 'each `:assoc` child must have two children')
+        raise(AstNodeParseError.new(
+                'each `:assoc` child must have two children', assoc_node
+        ))
       end
 
       # Checks the passed AstNode's children.
@@ -53,11 +55,16 @@ module YardSequel
 
       # Checks if the passed AstNode has only children of type `:assoc`.
       # @param (see .check_assoc_child_has_two_children)
+      # @raise [AstNodeParseError] If there are child nodes, that are not of the
+      #   `:assoc` type.
       # @return [void]
       def check_has_only_assoc_children(ast_node)
-        return unless ast_node.children.any? { |cn| cn.type != :assoc }
-        raise(ArgumentError,
-              'all children of the passed `ast` have to have the type `:assoc`')
+        ast_node.children.each do |child_node|
+          next unless child_node.type != :assoc
+          raise(AstNodeParseError.new(
+                  'all children have to have the type `:assoc`', child_node
+          ))
+        end
       end
 
       # Checks the children of a `:hash` type AstNode.
@@ -70,33 +77,37 @@ module YardSequel
 
       # Checks if the passed Object is an AstNode.
       # @param (see .check_assoc_child_has_two_children)
-      # @raise [TypeError] If the passed Object is not an AstNode.
+      # @raise [AstNodeParseError] If the passed Object is not an AstNode.
       # @return [nil]
       def check_is_ast_node(ast_node)
         return if ast_node.is_a? YARD::Parser::Ruby::AstNode
-        raise(TypeError,
-              'the passed `ast` has to be a `YARD::Parser::Ruby::AstNode`')
+        raise(AstNodeParseError,
+              'the passed Object has to be a `YARD::Parser::Ruby::AstNode`')
       end
 
       # Checks if the passed AstNode's type is either `:hash` or `:list`.
       # @param (see .check_assoc_child_has_two_children)
-      # @raise [ArgumentError] If the passed AstNode is none one of the two
+      # @raise [AstNodeParseError] If the passed AstNode is none one of the two
       #   types.
       # @return [nil]
       def check_is_hash_or_list(ast_node)
         return if %i[hash list].include? ast_node.type
-        raise(ArgumentError,
-              "the passed ast_node's type has to be `:hash` or `:list`")
+        raise(AstNodeParseError.new(
+                "the passed ast_node's type has to be `:hash` or `:list`",
+                ast_node
+        ))
       end
 
       # Checks the children of a `:list` type AstNode.
       # @param (see .check_assoc_child_has_two_children)
-      # @raise [ArgumentError] If the passed AstNode has no children.
+      # @raise [AstNodeParseError] If the passed AstNode has no children.
       # @return [void]
       def check_list_children(ast_node)
         if ast_node.children.empty?
-          raise(ArgumentError,
-                'a passed `ast` of type `:list` has to have children')
+          raise(AstNodeParseError.new(
+                  'a passed `ast` of type `:list` has to have children',
+                  ast_node
+          ))
         end
         check_children ast_node
       end
