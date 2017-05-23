@@ -9,18 +9,15 @@ RSpec.describe YardSequel::AstNodeHash, '.check_ast passed' do
   context 'nil' do
     it 'raises a AstNodeParseError' do
       expect { YardSequel::AstNodeHash.check_ast(nil) }
-        .to(raise_error(
-              YardSequel::AstNodeParseError,
-              'the passed Object has to be a `YARD::Parser::Ruby::AstNode`'
-        ))
+        .to raise_error YardSequel::AstNodeParseError,
+                        /has to be a `YARD::Parser::Ruby::AstNode`/i
     end
   end
 
   context 'an empty AstNode' do
     it 'raises an AstNodeParseError' do
       expect { YardSequel::AstNodeHash.check_ast(Ast.s) }
-        .to raise_error YardSequel::AstNodeParseError,
-                        'a passed `ast` of type `:list` has to have children'
+        .to raise_error YardSequel::AstNodeParseError, /has to have children/i
     end
   end
 
@@ -34,8 +31,7 @@ RSpec.describe YardSequel::AstNodeHash, '.check_ast passed' do
   context 'an empty :list AstNode' do
     it 'raises an AstNodeParseError' do
       expect { YardSequel::AstNodeHash.check_ast(Ast.s(:list)) }
-        .to raise_error YardSequel::AstNodeParseError,
-                        'a passed `ast` of type `:list` has to have children'
+        .to raise_error YardSequel::AstNodeParseError, /has to have children/i
     end
   end
 
@@ -50,8 +46,7 @@ RSpec.describe YardSequel::AstNodeHash, '.check_ast passed' do
   context 'an AstNode with an :assoc child with only one child' do
     it 'raises an AstNodeParseError' do
       expect { YardSequel::AstNodeHash.check_ast(Ast.s(Ast.s(:assoc, Ast.s))) }
-        .to raise_error YardSequel::AstNodeParseError,
-                        'each `:assoc` child must have two children'
+        .to raise_error YardSequel::AstNodeParseError, /must have two children/i
     end
   end
 
@@ -61,7 +56,7 @@ RSpec.describe YardSequel::AstNodeHash, '.check_ast passed' do
         YardSequel::AstNodeHash
           .check_ast(Ast.s(Ast.s(:assoc, Ast.s, Ast.s, Ast.s)))
       end.to raise_error YardSequel::AstNodeParseError,
-                         'each `:assoc` child must have two children'
+                         /must have two children/i
     end
   end
 end
