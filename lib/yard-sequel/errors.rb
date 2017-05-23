@@ -1,7 +1,33 @@
+# frozen_string_literal: true
+
 module YardSequel
   # The standard error for the plugin. All other errors inherit from this.
   # @author Kai Moschcau
   Error = Class.new ::StandardError
+
+  # Error that is raised if anything goes wrong with parsing any AstNode.
+  # @author Kai Moschcau
+  class AstNodeParseError < Error
+    # @return [YARD::Parser::Ruby::AstNode] the AstNode that caused the Error.
+    attr_accessor :ast_node
+
+    # @param [#to_s] message The message of the Error.
+    # @param [YARD::Parser::Ruby::AstNode] ast_node The AstNode that caused the
+    #   Error.
+    def initialize(message = nil, ast_node = nil)
+      @ast_node = ast_node
+      super message
+    end
+
+    # @param [Boolean] location_info Whether to prepend the location info of the
+    #   AstNode, if the attribute is set, to the message.
+    # @return [String] the message of the Error.
+    def message(location_info = false)
+      return super() unless location_info
+      [([@ast_node.file, @ast_node.line].compact.join(':') if @ast_node),
+       super()].compact.join(': ')
+    end
+  end
 
   # Error that is raised, when a AstNode could not be parsed into a usable
   # option value.

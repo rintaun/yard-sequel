@@ -1,8 +1,57 @@
 # frozen_string_literal: true
 
-require 'yard'
+RSpec.describe YardSequel::AstNodeParseError, '#message' do
+  ast_node = YARD::Parser::Ruby::RipperParser.parse(':foo').root[0]
+  message  = 'this is a message'
 
-# rubocop:disable Metrics/BlockLength
+  context 'initialized without a parameter' do
+    error = YardSequel::AstNodeParseError.new
+
+    it 'returns the class name' do
+      expect(error.message).to eq YardSequel::AstNodeParseError.name
+    end
+  end
+
+  context 'initialized with a message' do
+    error = YardSequel::AstNodeParseError.new(message)
+
+    it 'returns the message' do
+      expect(error.message).to be message
+    end
+
+    it 'returns only the message text, when location_info is true' do
+      expect(error.message(true)).to eq message
+    end
+  end
+
+  context 'initialized with only an AstNode' do
+    error = YardSequel::AstNodeParseError.new(nil, ast_node)
+
+    it 'returns the class name' do
+      expect(error.message).to eq YardSequel::AstNodeParseError.name
+    end
+
+    it 'returns the location info with the class name, '\
+       'when location_info is true' do
+      expect(error.message(true))
+        .to eq [[ast_node.file, ast_node.line].join(':'),
+                YardSequel::AstNodeParseError.name].join(': ')
+    end
+  end
+
+  context 'initialized with a message and an AstNode' do
+    error = YardSequel::AstNodeParseError.new(message, ast_node)
+
+    it 'returns the message' do
+      expect(error.message).to be message
+    end
+
+    it 'returns the message with location info, when location_info is true' do
+      expect(error.message(true))
+        .to eq [[ast_node.file, ast_node.line].join(':'), message].join(': ')
+    end
+  end
+end
 
 RSpec.describe YardSequel::OptionValueParseError, '.new passed' do
   context 'passed an AstNode' do
