@@ -5,5 +5,5 @@ unless ENV['SIMPLECOV'] == 'true'
   SimpleCov.formatter = Coveralls::SimpleCov::Formatter
 end
 SimpleCov.start do
-  add_filter 'spec_helper'
+  add_filter 'spec'
 end
