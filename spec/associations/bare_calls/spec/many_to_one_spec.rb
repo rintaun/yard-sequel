@@ -22,14 +22,9 @@ RSpec.describe 'Album', '`many_to_one :artist` call:' do
         .to be 1
     end
 
-    it 'has one return type' do
-      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types.size)
-        .to be 1
-    end
-
-    it "has a return type of 'Artist'" do
-      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types.first)
-        .to eq 'Artist'
+    it "has return types 'Artist' and 'nil'" do
+      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types)
+        .to contain_exactly 'Artist', 'nil'
     end
   end
 
@@ -44,6 +39,16 @@ RSpec.describe 'Album', '`many_to_one :artist` call:' do
 
     it 'is an instance method' do
       expect(method_object.scope).to be :instance
+    end
+
+    it 'has one return tag' do
+      expect(method_object.tags.select { |t| t.tag_name == 'return' }.size)
+        .to be 1
+    end
+
+    it "has return types 'Artist' and 'nil'" do
+      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types)
+        .to contain_exactly 'Artist', 'nil'
     end
   end
 
@@ -65,14 +70,9 @@ RSpec.describe 'Album', '`many_to_one :artist` call:' do
         .to be 1
     end
 
-    it 'has one return type' do
-      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types.size)
-        .to be 1
-    end
-
     it "has a return type of 'Sequel::Dataset'" do
-      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types.first)
-        .to eq 'Sequel::Dataset'
+      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types)
+        .to contain_exactly 'Sequel::Dataset'
     end
   end
 end

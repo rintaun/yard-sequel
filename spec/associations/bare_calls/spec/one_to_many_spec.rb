@@ -22,14 +22,9 @@ RSpec.describe 'Artist', '`one_to_many :albums` call:' do
         .to be 1
     end
 
-    it 'has one return type' do
-      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types.size)
-        .to be 1
-    end
-
-    it "has a return type of 'Array<Album>'" do
-      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types.first)
-        .to eq 'Array<Album>'
+    it "has return types 'Array<Album>' and 'nil'" do
+      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types)
+        .to contain_exactly 'Array<Album>', 'nil'
     end
   end
 
@@ -45,6 +40,16 @@ RSpec.describe 'Artist', '`one_to_many :albums` call:' do
     it 'is an instance method' do
       expect(method_object.scope).to be :instance
     end
+
+    it 'has one return tag' do
+      expect(method_object.tags.select { |t| t.tag_name == 'return' }.size)
+        .to be 1
+    end
+
+    it "has return types 'Album' and 'nil'" do
+      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types)
+        .to contain_exactly 'Album', 'nil'
+    end
   end
 
   context '#remove_album' do
@@ -59,6 +64,16 @@ RSpec.describe 'Artist', '`one_to_many :albums` call:' do
     it 'is an instance method' do
       expect(method_object.scope).to be :instance
     end
+
+    it 'has one return tag' do
+      expect(method_object.tags.select { |t| t.tag_name == 'return' }.size)
+        .to be 1
+    end
+
+    it "has return types 'Album' and 'nil'" do
+      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types)
+        .to contain_exactly 'Album', 'nil'
+    end
   end
 
   context '#remove_all_albums' do
@@ -72,6 +87,16 @@ RSpec.describe 'Artist', '`one_to_many :albums` call:' do
 
     it 'is an instance method' do
       expect(method_object.scope).to be :instance
+    end
+
+    it 'has one return tag' do
+      expect(method_object.tags.select { |t| t.tag_name == 'return' }.size)
+        .to be 1
+    end
+
+    it "has return types 'Array<Album>' and 'nil'" do
+      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types)
+        .to contain_exactly 'Array<Album>', 'nil'
     end
   end
 
@@ -93,14 +118,9 @@ RSpec.describe 'Artist', '`one_to_many :albums` call:' do
         .to be 1
     end
 
-    it 'has one return type' do
-      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types.size)
-        .to be 1
-    end
-
     it "has a return type of 'Sequel::Dataset'" do
-      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types.first)
-        .to eq 'Sequel::Dataset'
+      expect(method_object.tags.find { |t| t.tag_name == 'return' }.types)
+        .to contain_exactly 'Sequel::Dataset'
     end
   end
 end
