@@ -1,7 +1,9 @@
-if ENV['SIMPLECOV'] == 'true'
-  require 'simplecov'
-  SimpleCov.start
-else
+require 'simplecov'
+
+unless ENV['SIMPLECOV'] == 'true'
   require 'coveralls'
-  Coveralls.wear!
+  SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+end
+SimpleCov.start do
+  add_filter 'spec_helper'
 end
