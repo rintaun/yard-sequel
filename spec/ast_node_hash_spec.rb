@@ -14,6 +14,14 @@ RSpec.describe YardSequel::AstNodeHash, '.check_ast passed' do
     end
   end
 
+  context 'an AstNode with a not allowed type' do
+    it 'raises an AstNodeParseError' do
+      expect { YardSequel::AstNodeHash.check_ast(Ast.s(:foo)) }
+        .to raise_error YardSequel::AstNodeParseError,
+                        /type has to be `:hash` or `:list`/i
+    end
+  end
+
   context 'an empty AstNode' do
     it 'raises an AstNodeParseError' do
       expect { YardSequel::AstNodeHash.check_ast(Ast.s) }
@@ -32,6 +40,14 @@ RSpec.describe YardSequel::AstNodeHash, '.check_ast passed' do
     it 'raises an AstNodeParseError' do
       expect { YardSequel::AstNodeHash.check_ast(Ast.s(:list)) }
         .to raise_error YardSequel::AstNodeParseError, /has to have children/i
+    end
+  end
+
+  context 'a :list AstNode with non :assoc children' do
+    it 'raises an AstNodeParseError' do
+      expect { YardSequel::AstNodeHash.check_ast(Ast.s(:list, Ast.s)) }
+        .to raise_error YardSequel::AstNodeParseError,
+                        /children.*type `:assoc`/i
     end
   end
 
