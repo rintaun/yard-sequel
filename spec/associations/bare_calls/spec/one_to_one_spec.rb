@@ -13,6 +13,10 @@ RSpec.describe 'Artist', '`one_to_one :album` call:' do
       expect(method_object).not_to be_nil
     end
 
+    it 'is in the Artist namespace' do
+      expect(method_object.namespace.name).to be :Artist
+    end
+
     it 'is an instance method' do
       expect(method_object.scope).to be :instance
     end
@@ -37,6 +41,10 @@ RSpec.describe 'Artist', '`one_to_one :album` call:' do
       expect(method_object).not_to be_nil
     end
 
+    it 'is in the Artist namespace' do
+      expect(method_object.namespace.name).to be :Artist
+    end
+
     it 'is an instance method' do
       expect(method_object.scope).to be :instance
     end
@@ -59,6 +67,10 @@ RSpec.describe 'Artist', '`one_to_one :album` call:' do
 
     it 'exists as a method object' do
       expect(method_object).not_to be_nil
+    end
+
+    it 'is in the Artist namespace' do
+      expect(method_object.namespace.name).to be :Artist
     end
 
     it 'is an instance method' do
