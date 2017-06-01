@@ -18,6 +18,9 @@ end
 
 CLOBBER.include(Dir['pkg/*.gem'])
 
+desc 'Run specs with simplecov.'
+task(:spec) { sh('reset && SIMPLECOV=true rspec') {} }
+
 desc "Build gem file: #{target_gem_file}"
 task build: target_gem_file
 
