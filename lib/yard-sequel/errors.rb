@@ -29,7 +29,7 @@ module YardSequel
 
     private
 
-    # @note This disables STDERR while getting the attribute.
+    # @note This disables $stderr while getting the attribute.
     # @return [String, nil] the file name of the AstNode.
     def ast_node_file
       return unless @ast_node
