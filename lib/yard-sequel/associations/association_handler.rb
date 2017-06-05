@@ -36,11 +36,11 @@ module YardSequel
         @statement.parameters[1].filter { |node| node.type == :assoc }
       end
 
-      # @param [String] name The name of the method object.
-      # @return [YARD::CodeObjects::MethodObject] a method object.
-      def create_method_object(name)
+      # @param [String] name The name of the MethodObject.
+      # @return [YARD::CodeObjects::MethodObject] a MethodObject.
+      def method_object(name)
         method = YARD::CodeObjects::MethodObject.new(namespace, name)
-        register_and_tag method
+        method[:sequel] = :association
         method
       end
 
@@ -66,22 +66,6 @@ module YardSequel
         method.docstring.add_tag(
           YARD::Tags::Tag.new(:return, nil, 'void')
         )
-      end
-
-      private
-
-      # Registers the source of a given method object and sets some tags.
-      # @param [YARD::CodeObjects::MethodObject] method
-      #   The method object to register and tag.
-      # @return [void]
-      def register_and_tag(method)
-        unless method.is_a? YARD::CodeObjects::MethodObject
-          raise(ArgumentError, 'The given method has to be a ' +
-            YARD::CodeObjects::MethodObject.to_s)
-        end
-        register method
-        method.dynamic  = true
-        method[:sequel] = :association
       end
     end
   end

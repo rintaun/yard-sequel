@@ -7,13 +7,12 @@ module YardSequel
     class ManyToOneHandler < YardSequel::Associations::AssociationHandler
       include YardSequel::Associations::DatasetMethod
       include YardSequel::Associations::ToOneMethods
-      handles method_call(:many_to_one)
+      handles method_call :many_to_one
       namespace_only
       def process
         super
-        create_to_one_getter
-        create_to_one_setter
-        create_dataset_method
+        register(association_method_object, setter_method_object,
+                 dataset_method_object)
       end
     end
   end
