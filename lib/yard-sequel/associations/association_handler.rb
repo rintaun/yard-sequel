@@ -5,6 +5,21 @@ module YardSequel
     # The basic DSL handler class for Sequel associations.
     # @author Kai Moschcau
     class AssociationHandler < YARD::Handlers::Ruby::DSLHandler
+      class << self
+        # @param [YARD::Parser::Ruby::MethodCallNode] statement The statement
+        #   to get the association name from.
+        # @return [String] the name of the association
+        def association_name(statement)
+          ast_node = statement.parameters.first
+          unless ast_node.type == :symbol_literal
+            raise(AstNodeParseError
+                  .new('Can only parse Symbol literals as association names.',
+                       ast_node))
+          end
+          ast_node.jump(:ident).source
+        end
+      end
+
       def process
         log.debug { "#{self.class.name}#process call" }
       end
@@ -25,9 +40,9 @@ module YardSequel
         )
       end
 
-      # @return [String] the name of the association
+      # @return (see .association_name)
       def association_name
-        @statement.parameters.first.jump(:ident).source
+        self.class.association_name @statement
       end
 
       # @return [Array<YARD::Parser::Ruby::AstNode>] the association nodes
