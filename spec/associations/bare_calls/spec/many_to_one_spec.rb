@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe 'Album', '`many_to_one :artist` call:' do
   before do
     YARD::Registry.clear
