@@ -8,6 +8,8 @@ module YardSequel
       include YardSequel::Associations::DatasetMethod
       include YardSequel::Associations::ToOneMethods
       handles method_call(:many_to_one)
+      handles method_call(:one_to_one)
+      handles method_call(:one_through_one)
       namespace_only
       def process
         super
