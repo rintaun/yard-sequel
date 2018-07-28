@@ -13,9 +13,12 @@ module YardSequel
       namespace_only
       def process
         super
+        orig_group = extra_state.group
+        extra_state.group = "#{association_name} association"
         create_to_one_getter
         create_to_one_setter
         create_dataset_method
+        extra_state.group = orig_group
       end
     end
   end
