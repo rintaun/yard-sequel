@@ -11,3 +11,4 @@ module YardSequel; end
 
 require_relative 'yard-sequel/associations'
 require_relative 'yard-sequel/ast_node_hash'
+require_relative 'yard-sequel/model_superclass'
