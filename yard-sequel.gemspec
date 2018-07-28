@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'rubocop'
+  spec.add_development_dependency 'simplecov'
 
   spec.add_runtime_dependency 'sequel', '>= 4.0'
   spec.add_runtime_dependency 'yard', '~> 0.9'

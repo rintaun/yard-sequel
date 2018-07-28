@@ -50,8 +50,8 @@ Gemfile.lock
 .rvmrc
 
 /.idea/
-/test/assoc_global_space/.yardoc/
-/test/assoc_global_space/doc/
+/spec/associations/*/.yardoc/
+/spec/associations/*/doc/
 .byebug_history
 .rake_tasks~
 *.swp

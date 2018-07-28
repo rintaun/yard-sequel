@@ -1,26 +1,31 @@
 # frozen_string_literal: true
 
-require 'yard'
-require 'yard/parser/ruby/ast_node'
-
 # Helper class to easily create ASTs.
 class Ast
   extend YARD::Parser::Ruby
 end
 
-# rubocop:disable Metrics/BlockLength
-
 RSpec.describe YardSequel::AstNodeHash, '.check_ast passed' do
   context 'nil' do
-    it 'raises a TypeError' do
-      expect { YardSequel::AstNodeHash.check_ast(nil) }.to raise_error TypeError
+    it 'raises a AstNodeParseError' do
+      expect { YardSequel::AstNodeHash.check_ast(nil) }
+        .to raise_error YardSequel::AstNodeParseError,
+                        /has to be a `YARD::Parser::Ruby::AstNode`/i
+    end
+  end
+
+  context 'an AstNode with a not allowed type' do
+    it 'raises an AstNodeParseError' do
+      expect { YardSequel::AstNodeHash.check_ast(Ast.s(:foo)) }
+        .to raise_error YardSequel::AstNodeParseError,
+                        /type has to be `:hash` or `:list`/i
     end
   end
 
   context 'an empty AstNode' do
-    it 'raises an ArgumentError' do
+    it 'raises an AstNodeParseError' do
       expect { YardSequel::AstNodeHash.check_ast(Ast.s) }
-        .to raise_error ArgumentError
+        .to raise_error YardSequel::AstNodeParseError, /has to have children/i
     end
   end
 
@@ -32,9 +37,17 @@ RSpec.describe YardSequel::AstNodeHash, '.check_ast passed' do
   end
 
   context 'an empty :list AstNode' do
-    it 'raises an ArgumentError' do
+    it 'raises an AstNodeParseError' do
       expect { YardSequel::AstNodeHash.check_ast(Ast.s(:list)) }
-        .to raise_error ArgumentError
+        .to raise_error YardSequel::AstNodeParseError, /has to have children/i
+    end
+  end
+
+  context 'a :list AstNode with non :assoc children' do
+    it 'raises an AstNodeParseError' do
+      expect { YardSequel::AstNodeHash.check_ast(Ast.s(:list, Ast.s)) }
+        .to raise_error YardSequel::AstNodeParseError,
+                        /children.*type `:assoc`/i
     end
   end
 
@@ -47,18 +60,19 @@ RSpec.describe YardSequel::AstNodeHash, '.check_ast passed' do
   end
 
   context 'an AstNode with an :assoc child with only one child' do
-    it 'raises an ArgumentError' do
+    it 'raises an AstNodeParseError' do
       expect { YardSequel::AstNodeHash.check_ast(Ast.s(Ast.s(:assoc, Ast.s))) }
-        .to raise_error ArgumentError
+        .to raise_error YardSequel::AstNodeParseError, /must have two children/i
     end
   end
 
   context 'an AstNode with an :assoc child with three children' do
-    it 'raises an ArgumentError' do
+    it 'raises an AstNodeParseError' do
       expect do
         YardSequel::AstNodeHash
           .check_ast(Ast.s(Ast.s(:assoc, Ast.s, Ast.s, Ast.s)))
-      end.to raise_error ArgumentError
+      end.to raise_error YardSequel::AstNodeParseError,
+                         /must have two children/i
     end
   end
 end

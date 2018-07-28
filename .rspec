@@ -1,3 +1,4 @@
 --color
---require coveralls_helper
+--require coverage_helper
 --require spec_helper
+--require associations/documentation_helper
