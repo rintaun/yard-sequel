@@ -45,28 +45,21 @@ module YardSequel
         self.class.association_name @statement
       end
 
-      # @return [Array<YARD::Parser::Ruby::AstNode>] the association nodes
-      #   of the options Hash.
+      # @author Matthew Lanigan <rintaun@gmail.com>
+      # @return [Hash{YARD::Parser::Ruby::AstNode=>YARD::Parser::Ruby::AstNode}]
+      #   a hash with AstNodes as keys and values representing the options for
+      #   the statement
       def association_options
-        s = @statement.parameters[1] || return
-        s = s.select { |node| node.type == :assoc } || return
-        AstNodeHash.from_ast(@statement.parameters[1])
+        s = @statement.parameters[1] || return # if no parameters
+        s = s.select { |node| node.type == :assoc } || return # if no options
+        AssociationOptions.new AstNodeHash.from_ast(@statement.parameters[1])
       end
 
+      # @author Matthew Lanigan <rintaun@gmail.com>
+      # @return [String] the class of the association
       def association_class
         return unless opt = association_options
-        ret = nil
-        ret = opt.select do |k, v|
-          while k.respond_to? :last
-            k = k.last
-          end
-          next unless k.is_a?(String) && k.downcase == 'class'
-          while v.respond_to? :last
-            v = v.last
-          end
-          break v
-        end
-        ret unless ret.empty?
+        opt.class_option
       end
 
       # @param [String] name The name of the MethodObject.
