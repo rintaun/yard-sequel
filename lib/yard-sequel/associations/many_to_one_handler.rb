@@ -14,7 +14,7 @@ module YardSequel
       def process
         super
         orig_group = extra_state.group
-        extra_state.group = "#{association_name} association"
+        extra_state.group = "#{association_name.humanize} association"
         register(association_method_object, setter_method_object,
                  dataset_method_object)
         extra_state.group = orig_group
